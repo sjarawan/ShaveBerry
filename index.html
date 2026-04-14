@@ -1,157 +1,820 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Shave Berry — Tokyo Inspired Healthy Dessert</title>
-  <meta name="description" content="Tokyo-inspired, healthy shaved-ice dessert made with real strawberries. Shave Berry is coming soon." />
-  <meta property="og:title" content="Shave Berry — Coming Soon" />
-  <meta property="og:description" content="A Tokyo-inspired healthy dessert. Naturally sweet. Coming soon." />
+  <title>Shave Berry â€” Tokyo-Inspired Shaved Strawberry Dessert | Boise, Idaho</title>
+  <meta name="description" content="Shave Berry is a mobile food trailer bringing Tokyo-inspired shaved strawberry desserts to Boise, Meridian &amp; Eagle, Idaho. Find our weekly schedule and book us for your event!" />
+  <meta property="og:title" content="Shave Berry â€” Tokyo-Inspired Dessert in Boise" />
+  <meta property="og:description" content="A Tokyo-inspired healthy shaved strawberry dessert, handcrafted with real fruit. Find our trailer this week!" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://www.shaveberry.com" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet" />
   <style>
-    /* Base */
-    *, *::before, *::after { box-sizing: border-box; }
-    html, body { height: 100%; }
+    /* â”€â”€ Reset & Base â”€â”€ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; scroll-padding-top: 80px; }
     body {
-      margin: 0;
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: #101010;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1a1a1a;
       background: #fff;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
+      line-height: 1.6;
+    }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    /* â”€â”€ Colors â”€â”€ */
+    :root {
+      --berry: #C91E1E;
+      --berry-dark: #a01818;
+      --berry-light: #FFF0F0;
+      --pink: #FFE4E6;
+      --cream: #FFF8F0;
+      --dark: #1a1a1a;
+      --gray: #555;
+      --light-gray: #999;
+      --border: #eaeaea;
+      --white: #ffffff;
+      --shadow-sm: 0 2px 8px rgba(0,0,0,.06);
+      --shadow-md: 0 8px 30px rgba(0,0,0,.08);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,.10);
+      --radius: 16px;
+      --radius-lg: 24px;
     }
 
-    /* Layout */
-    .page {
-      min-height: 100dvh;
-      display: grid;
-      grid-template-rows: 1fr auto;
-      place-items: center;
-      padding: clamp(24px, 4vw, 48px);
-      gap: 28px;
+    /* â”€â”€ Nav â”€â”€ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow .3s ease;
     }
-
-    .hero {
-      display: grid;
-      place-items: center;
-      text-align: center;
-      gap: 20px;
-      max-width: 860px;
-      width: 100%;
+    nav.scrolled { box-shadow: var(--shadow-sm); }
+    .nav-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
     }
-
-    .logo {
-      width: min(520px, 82vw);
-      height: auto;
+    .nav-logo {
+      height: 48px;
+      width: auto;
       user-select: none;
       -webkit-user-drag: none;
-      filter: drop-shadow(0 12px 28px rgba(0,0,0,.04));
-      opacity: 0;
-      transform: translateY(12px);
-      animation: fadeIn 900ms ease forwards;
     }
-
-    h1 {
-      margin: 0;
-      font-size: clamp(28px, 5vw, 56px);
-      letter-spacing: -0.02em;
-      line-height: 1.1;
+    .nav-links { display: flex; gap: 32px; align-items: center; list-style: none; }
+    .nav-links a {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--gray);
+      transition: color .2s;
     }
-
-    .accent { color: #C91E1E; }
-
-    p.lead {
-      margin: 0;
-      color: #505050;
-      font-size: clamp(16px, 2.2vw, 20px);
-      max-width: 60ch;
-    }
-
-    /* Notify form */
-    .notify {
-      display: inline-flex;
-      gap: 10px;
-      margin-top: 8px;
-      align-items: center;
-      border: 1px solid #EAEAEA;
-      padding: 10px 12px;
+    .nav-links a:hover { color: var(--berry); }
+    .nav-cta {
+      background: var(--berry) !important;
+      color: var(--white) !important;
+      padding: 10px 22px !important;
       border-radius: 999px;
-      background: #fff;
-      box-shadow: 0 10px 26px rgba(0,0,0,.04);
+      font-weight: 600 !important;
+      font-size: 14px !important;
+      transition: background .2s, transform .15s;
+    }
+    .nav-cta:hover { background: var(--berry-dark) !important; transform: translateY(-1px); }
+    .hamburger {
+      display: none;
+      background: none;
+      border: 0;
+      cursor: pointer;
+      padding: 8px;
+    }
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: var(--dark);
+      margin: 6px 0;
+      border-radius: 2px;
+      transition: .3s;
     }
 
-    .notify input {
-      border: 0;
-      outline: 0;
-      font-size: 16px;
-      min-width: min(52vw, 280px);
+    /* â”€â”€ Sections â”€â”€ */
+    section { padding: 100px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--berry);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .section-subtitle {
+      font-size: clamp(16px, 2vw, 19px);
+      color: var(--gray);
+      max-width: 600px;
     }
 
-    .notify button {
-      border: 0;
-      background: #C91E1E;
-      color: #fff;
-      padding: 10px 14px;
+    /* â”€â”€ Hero â”€â”€ */
+    .hero {
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 72px;
+      background: linear-gradient(170deg, var(--white) 0%, var(--berry-light) 50%, var(--pink) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to top, var(--white), transparent);
+    }
+    .hero-content {
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 24px;
+      position: relative;
+      z-index: 1;
+    }
+    .hero-logo {
+      width: min(320px, 65vw);
+      height: auto;
+      margin: 0 auto 32px;
+      filter: drop-shadow(0 16px 40px rgba(201,30,30,.12));
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp .8s ease .2s forwards;
+    }
+    .hero h1 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(36px, 6vw, 68px);
+      line-height: 1.08;
+      letter-spacing: -0.025em;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp .8s ease .4s forwards;
+    }
+    .hero h1 .accent { color: var(--berry); }
+    .hero .lead {
+      font-size: clamp(17px, 2.4vw, 21px);
+      color: var(--gray);
+      max-width: 540px;
+      margin: 0 auto 36px;
+      opacity: 0;
+      animation: fadeUp .8s ease .55s forwards;
+    }
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp .8s ease .7s forwards;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
       border-radius: 999px;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 16px;
       cursor: pointer;
-      transition: transform .15s ease, box-shadow .15s ease;
+      border: 0;
+      transition: all .2s;
+    }
+    .btn-primary {
+      background: var(--berry);
+      color: var(--white);
+      box-shadow: 0 4px 20px rgba(201,30,30,.3);
+    }
+    .btn-primary:hover {
+      background: var(--berry-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(201,30,30,.35);
+    }
+    .btn-outline {
+      background: var(--white);
+      color: var(--dark);
+      border: 2px solid var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--berry);
+      color: var(--berry);
+      transform: translateY(-2px);
     }
 
-    .notify button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 18px rgba(201,30,30,.25);
+    /* â”€â”€ Features / What We Serve â”€â”€ */
+    .features { background: var(--white); }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 32px;
+      margin-top: 48px;
     }
-
-    .notify button:active {
-      transform: translateY(0);
-    }
-
-    .helper {
-      font-size: 12px;
-      color: #8a8a8a;
-      margin-top: 8px;
-    }
-
-    footer {
-      width: 100%;
+    .feature-card {
+      background: var(--cream);
+      border-radius: var(--radius-lg);
+      padding: 40px 32px;
       text-align: center;
-      color: #9a9a9a;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-md);
+    }
+    .feature-icon { font-size: 48px; margin-bottom: 20px; }
+    .feature-card h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+    .feature-card p { color: var(--gray); font-size: 15px; line-height: 1.6; }
+
+    /* â”€â”€ Schedule â”€â”€ */
+    .schedule { background: var(--berry-light); }
+    .schedule-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      margin-top: 48px;
+      align-items: start;
+    }
+    .schedule-list { display: flex; flex-direction: column; gap: 16px; }
+    .schedule-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .schedule-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-md);
+    }
+    .schedule-day {
+      background: var(--berry);
+      color: var(--white);
+      border-radius: 12px;
+      width: 60px; height: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      line-height: 1.1;
+      flex-shrink: 0;
+    }
+    .schedule-day .day-name { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+    .schedule-day .day-num { font-size: 22px; }
+    .schedule-info h4 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .schedule-info p { font-size: 14px; color: var(--gray); }
+    .schedule-info .schedule-time {
       font-size: 13px;
-      padding: 8px 0;
+      color: var(--berry);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .schedule-note {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: var(--shadow-sm);
+    }
+    .schedule-note h3 { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+    .schedule-note p { color: var(--gray); font-size: 15px; line-height: 1.7; margin-bottom: 16px; }
+    .schedule-follow { display: flex; gap: 12px; margin-top: 20px; }
+    .social-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 600;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .social-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .social-btn.instagram { background: linear-gradient(135deg, #833AB4, #FD1D1D, #F77737); color: #fff; }
+    .social-btn.tiktok { background: #000; color: #fff; }
+
+    /* â”€â”€ About / Story â”€â”€ */
+    .about { background: var(--white); }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      margin-top: 48px;
+      align-items: center;
+    }
+    .about-image {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--pink), var(--cream));
+      aspect-ratio: 4/5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 120px;
+      box-shadow: var(--shadow-lg);
+    }
+    .about-text h3 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(24px, 3.5vw, 38px);
+      line-height: 1.2;
+      margin-bottom: 20px;
+    }
+    .about-text p {
+      color: var(--gray);
+      font-size: 16px;
+      line-height: 1.8;
+      margin-bottom: 16px;
     }
 
-    @keyframes fadeIn {
+    /* â”€â”€ Highlights / Why Shave Berry â”€â”€ */
+    .highlights { background: var(--dark); color: var(--white); }
+    .highlights .section-subtitle { color: rgba(255,255,255,.6); }
+    .highlights-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 32px;
+      margin-top: 48px;
+    }
+    .highlight-item { text-align: center; padding: 32px 20px; }
+    .highlight-num {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--berry);
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    .highlight-item h4 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+    .highlight-item p { font-size: 14px; color: rgba(255,255,255,.55); line-height: 1.6; }
+
+    /* â”€â”€ Events CTA â”€â”€ */
+    .events {
+      background: linear-gradient(135deg, var(--berry-light), var(--pink), var(--cream));
+    }
+    .events-inner {
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .events-inner .section-title { margin-bottom: 16px; }
+    .events-inner p { color: var(--gray); font-size: 17px; line-height: 1.7; margin-bottom: 32px; }
+    .events-inner .event-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 36px;
+    }
+    .event-tag {
+      background: var(--white);
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--dark);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* â”€â”€ Social Proof â”€â”€ */
+    .social-section { background: var(--white); text-align: center; }
+    .social-grid {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 40px;
+    }
+    .social-card {
+      background: var(--cream);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      max-width: 340px;
+      flex: 1;
+      min-width: 260px;
+      text-align: left;
+    }
+    .social-card .stars { color: #F59E0B; font-size: 18px; margin-bottom: 12px; }
+    .social-card p { font-size: 15px; color: var(--gray); line-height: 1.7; font-style: italic; }
+    .social-card .reviewer {
+      margin-top: 16px;
+      font-style: normal;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--dark);
+    }
+
+    /* â”€â”€ Footer â”€â”€ */
+    .site-footer {
+      background: var(--dark);
+      color: rgba(255,255,255,.7);
+      padding: 60px 24px 36px;
+    }
+    .footer-grid {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    .footer-brand .footer-logo {
+      height: 56px;
+      width: auto;
+      margin-bottom: 16px;
+      filter: brightness(0) invert(1);
+    }
+    .footer-brand p { font-size: 14px; line-height: 1.7; max-width: 280px; }
+    .footer-col h4 {
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      margin-bottom: 16px;
+    }
+    .footer-col a {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: rgba(255,255,255,.6);
+      transition: color .2s;
+    }
+    .footer-col a:hover { color: var(--white); }
+    .footer-bottom {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-bottom p { font-size: 13px; }
+    .footer-socials { display: flex; gap: 16px; }
+    .footer-socials a {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: rgba(255,255,255,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: background .2s, transform .15s;
+    }
+    .footer-socials a:hover { background: var(--berry); transform: translateY(-2px); }
+
+    /* â”€â”€ Animations â”€â”€ */
+    @keyframes fadeUp {
       to { opacity: 1; transform: translateY(0); }
     }
+    .fade-in {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
 
+    /* â”€â”€ Mobile â”€â”€ */
+    @media (max-width: 900px) {
+      .schedule-wrapper { grid-template-columns: 1fr; }
+      .about-grid { grid-template-columns: 1fr; gap: 40px; }
+      .about-image { max-height: 400px; aspect-ratio: 16/9; }
+      .footer-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 680px) {
+      section { padding: 72px 20px; }
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 72px; left: 0; right: 0;
+        background: var(--white);
+        padding: 24px;
+        gap: 20px;
+        border-bottom: 1px solid var(--border);
+        box-shadow: var(--shadow-md);
+      }
+      .footer-grid { grid-template-columns: 1fr; }
+      .schedule-follow { flex-direction: column; }
+      .hero-buttons { flex-direction: column; align-items: center; }
+    }
     @media (prefers-reduced-motion: reduce) {
-      .logo { animation: none; opacity: 1; transform: none; }
-      .notify button { transition: none; }
+      html { scroll-behavior: auto; }
+      .hero-logo, .hero h1, .hero .lead, .hero-buttons { animation: none; opacity: 1; transform: none; }
+      .fade-in { transition: none; opacity: 1; transform: none; }
+      .btn, .feature-card, .schedule-card, .social-btn { transition: none; }
     }
   </style>
 </head>
 <body>
-  <main class="page" role="main">
-    <section class="hero" aria-label="Shave Berry Coming Soon">
-      <img class="logo" src="ShaveBerryFinalTransparent.png" width="600" height="600" alt="Shave Berry logo" />
-      <h1><span class="accent">Tokyo inspired.</span></h1>
-      <p class="lead">A healthy shaved-strawberry dessert — crafted with simplicity and a touch of sweet creaminess.</P>
-      <br>
-      <h2>Coming soon to Boise / Meridian / Eagle, Idaho</h2>
 
-      <!--<h2><span class="accent"> <a href="https://shave-berry.myshopify.com/">Get your Shave Berry merch now!</a></span></h2>-->
-<!--
-      <form class="notify" method="GET" action="mailto:support@shaveberry.com">
-        <input aria-label="Your email" type="email" name="email" placeholder="your@email.com" required />
-        <button type="submit">Notify me</button>
-      </form>
-      <div class="helper">We’ll only use your email for a launch update.</div>
-    </section>
--->
-    <footer>
-      © 2025 Shave Berry
-    </footer>
-  </main>
+  <!-- â”€â”€â”€ Navigation â”€â”€â”€ -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#hero"><img class="nav-logo" src="Logo.png" alt="Shave Berry" /></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#about">Our Story</a></li>
+        <li><a href="#events" class="nav-cta">Book Our Trailer</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- â”€â”€â”€ Hero â”€â”€â”€ -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <img class="hero-logo" src="Logo.png" width="600" height="600" alt="Shave Berry logo" />
+      <h1><span class="accent">Tokyo-inspired.</span><br>Naturally delicious.</h1>
+      <p class="lead">A shaved strawberry dessert so light, creamy, and refreshing &mdash; you won't believe it's healthy. Now rolling through Boise, Idaho.</p>
+      <div class="hero-buttons">
+        <a href="#schedule" class="btn btn-primary">&#x1F4CD; Find Us This Week</a>
+        <a href="#about" class="btn btn-outline">Our Story &rarr;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- â”€â”€â”€ What We Serve â”€â”€â”€ -->
+  <section class="features" id="menu">
+    <div class="container fade-in">
+      <span class="section-label">What We Serve</span>
+      <h2 class="section-title">One dessert. Perfected.</h2>
+      <p class="section-subtitle">Inspired by a tiny Tokyo shop, our shaved strawberry is crafted from real frozen fruit &mdash; no syrups, no artificial colors, just pure berry bliss.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F353;</div>
+          <h3>Shaved Strawberry</h3>
+          <p>Frozen whole strawberries, shaved into delicate ribbons that melt on your tongue. Light, fruity, and impossibly smooth.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x1F366;</div>
+          <h3>Sweet Milk &amp; Sauces</h3>
+          <p>Our classic sweet milk drizzle is pure indulgence. Want a healthier twist? Try local Idaho honey or go bold with rich chocolate sauce.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">&#x2728;</div>
+          <h3>Premium Toppings</h3>
+          <p>100% fresh whipped cream, vanilla ice cream, chocolate chips, and crunchy granola &mdash; build your perfect bowl with our delicious topping options.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- â”€â”€â”€ Weekly Schedule â”€â”€â”€ -->
+  <section class="schedule" id="schedule">
+    <div class="container fade-in">
+      <span class="section-label">Find Our Trailer</span>
+      <h2 class="section-title">Upcoming schedule</h2>
+      <p class="section-subtitle">We alternate Saturdays between the Boise Farmers Market and the Nampa Farmers Market. Follow us on social media for updates!</p>
+      <div class="schedule-wrapper">
+        <div class="schedule-list">
+          <div class="schedule-card">
+            <div class="schedule-day"><span class="day-name">Sat</span><span class="day-num">18</span></div>
+            <div class="schedule-info">
+              <h4>Boise Farmers Market</h4>
+              <p>Downtown Boise, 10th &amp; Grove St</p>
+              <div class="schedule-time">9:00 AM &ndash; 1:00 PM</div>
+            </div>
+          </div>
+          <div class="schedule-card">
+            <div class="schedule-day"><span class="day-name">Sat</span><span class="day-num">25</span></div>
+            <div class="schedule-info">
+              <h4>Nampa Farmers Market</h4>
+              <p>Downtown Nampa, Lloyd Square</p>
+              <div class="schedule-time">9:00 AM &ndash; 1:00 PM</div>
+            </div>
+          </div>
+          <div class="schedule-card">
+            <div class="schedule-day"><span class="day-name">Sat</span><span class="day-num">2</span></div>
+            <div class="schedule-info">
+              <h4>Boise Farmers Market</h4>
+              <p>Downtown Boise, 10th &amp; Grove St</p>
+              <div class="schedule-time">9:00 AM &ndash; 1:00 PM</div>
+            </div>
+          </div>
+          <div class="schedule-card">
+            <div class="schedule-day"><span class="day-name">Sat</span><span class="day-num">9</span></div>
+            <div class="schedule-info">
+              <h4>Nampa Farmers Market</h4>
+              <p>Downtown Nampa, Lloyd Square</p>
+              <div class="schedule-time">9:00 AM &ndash; 1:00 PM</div>
+            </div>
+          </div>
+        </div>
+        <div class="schedule-note">
+          <h3>&#x1F4CD; Never miss a stop</h3>
+          <p>Our schedule changes weekly based on events, weather, and community requests. The best way to stay in the loop:</p>
+          <p><strong>Follow us on social media</strong> for same-day location pins, surprise pop-ups, and behind-the-scenes content.</p>
+          <div class="schedule-follow">
+            <a href="https://www.instagram.com/shaveberryco" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
+              &#x1F4F8; @shaveberryco
+            </a>
+            <a href="https://www.tiktok.com/@shaveberryllc" target="_blank" rel="noopener noreferrer" class="social-btn tiktok">
+              &#x1F3B5; @shaveberryllc
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- â”€â”€â”€ About / Our Story â”€â”€â”€ -->
+  <section class="about" id="about">
+    <div class="container fade-in">
+      <span class="section-label">Our Story</span>
+      <h2 class="section-title">From Tokyo streets to Boise treats</h2>
+      <div class="about-grid">
+        <div class="about-image">&#x1F1EF;&#x1F1F5;</div>
+        <div class="about-text">
+          <h3>A father-daughter trip that changed everything</h3>
+          <p>In 2025, my daughter and I traveled to Tokyo. After taking in the electric energy of the famous Shibuya Crossing, we wandered down a side street and stumbled upon a tiny dessert shop with a line out the door. Inside, they were shaving frozen whole strawberries into the most incredible dessert we'd ever tasted &mdash; light as snow, bursting with natural sweetness, and topped with a silky cream that made it feel like a dream.</p>
+          <p>We were hooked. We went back three more times before our trip ended.</p>
+          <p>When we got home to Boise, we searched everywhere &mdash; grocery stores, dessert shops, farmers markets. <strong>Nobody in North America was making it.</strong></p>
+          <p>So we decided to bring it here ourselves. We bought a trailer, perfected the recipe, and Shave Berry was born &mdash; a little piece of Tokyo, rolling through the streets of Boise, Idaho.</p>
+          <p>Every cup we serve is a reminder: the best adventures lead to the sweetest ideas. &#x1F353;</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- â”€â”€â”€ Why Shave Berry â”€â”€â”€ -->
+  <section class="highlights" id="why">
+    <div class="container fade-in">
+      <span class="section-label">Why Shave Berry</span>
+      <h2 class="section-title" style="color:#fff;">Not your average dessert trailer</h2>
+      <p class="section-subtitle">We keep it simple, real, and ridiculously delicious.</p>
+      <div class="highlights-grid">
+        <div class="highlight-item">
+          <div class="highlight-num">100%</div>
+          <h4>Real Fruit</h4>
+          <p>Made from whole frozen strawberries. No syrups, no artificial flavors, no food coloring.</p>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-num">~220</div>
+          <h4>Calories Per Serving</h4>
+          <p>A guilt-free treat that tastes like pure indulgence.</p>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-num">1st</div>
+          <h4>In North America</h4>
+          <p>You won't find this style of shaved strawberry dessert anywhere else on the continent.</p>
+        </div>
+        <div class="highlight-item">
+          <div class="highlight-num">&hearts;</div>
+          <h4>Family-Made</h4>
+          <p>Born from a father-daughter adventure and a passion for sharing something special.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- â”€â”€â”€ Book for Events â”€â”€â”€ -->
+  <section class="events" id="events">
+    <div class="container">
+      <div class="events-inner fade-in">
+        <span class="section-label">Book Us</span>
+        <h2 class="section-title">Bring Shave Berry to your event</h2>
+        <p>Birthday parties, corporate events, weddings, school fundraisers, neighborhood block parties &mdash; wherever people gather, we bring the berry. Our mobile trailer is fully self-contained and ready to roll.</p>
+        <div class="event-list">
+          <span class="event-tag">&#x1F382; Birthday Parties</span>
+          <span class="event-tag">&#x1F3E2; Corporate Events</span>
+          <span class="event-tag">&#x1F492; Weddings</span>
+          <span class="event-tag">&#x1F3EB; School Fundraisers</span>
+          <span class="event-tag">&#x1F3AA; Festivals</span>
+          <span class="event-tag">&#x1F3E1; Block Parties</span>
+          <span class="event-tag">&#x1F3CB;&#xFE0F; Gym &amp; Wellness Events</span>
+        </div>
+        <a href="mailto:info@shaveberry.com?subject=Event%20Inquiry%20-%20Shave%20Berry" class="btn btn-primary">&#x1F4E7; Request Shave Berry for Your Event</a>
+        <p style="margin-top:16px; font-size:14px; color:var(--light-gray);">Email us at <strong>info@shaveberry.com</strong> &mdash; we'll get back to you within 24 hours.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- â”€â”€â”€ Testimonials â”€â”€â”€ -->
+  <section class="social-section" id="reviews">
+    <div class="container fade-in">
+      <span class="section-label">What People Say</span>
+      <h2 class="section-title">Boise is obsessed</h2>
+      <div class="social-grid">
+        <div class="social-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>"I literally thought this was ice cream at first. It's SO creamy and light. My kids won't stop asking when Shave Berry is coming back to our neighborhood."</p>
+          <div class="reviewer">&mdash; Sarah M., Meridian</div>
+        </div>
+        <div class="social-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>"I've been to Tokyo and had the original. This is the real deal. Can't believe I can get it in Boise now."</p>
+          <div class="reviewer">&mdash; Jason K., Boise</div>
+        </div>
+        <div class="social-card">
+          <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <p>"We hired Shave Berry for our company picnic and it was the highlight. Everyone was raving. Already booked them again."</p>
+          <div class="reviewer">&mdash; Priya D., Eagle</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- â”€â”€â”€ Footer â”€â”€â”€ -->
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img class="footer-logo" src="Logo.png" alt="Shave Berry" />
+        <p>Tokyo-inspired shaved strawberry desserts, handcrafted and served fresh from our mobile trailer in the Boise, Idaho area.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <a href="#menu">Menu</a>
+        <a href="#schedule">Weekly Schedule</a>
+        <a href="#about">Our Story</a>
+        <a href="#events">Book Our Trailer</a>
+      </div>
+      <div class="footer-col">
+        <h4>Connect</h4>
+        <a href="https://www.instagram.com/shaveberryco" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.tiktok.com/@shaveberryllc" target="_blank" rel="noopener noreferrer">TikTok</a>
+        <a href="mailto:info@shaveberry.com">info@shaveberry.com</a>
+      </div>
+      <div class="footer-col">
+        <h4>Serving</h4>
+        <a href="#schedule">Boise, ID</a>
+        <a href="#schedule">Meridian, ID</a>
+        <a href="#schedule">Eagle, ID</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 Shave Berry LLC. All rights reserved.</p>
+      <div class="footer-socials">
+        <a href="https://www.instagram.com/shaveberryco" target="_blank" rel="noopener noreferrer" aria-label="Instagram">&#x1F4F8;</a>
+        <a href="https://www.tiktok.com/@shaveberryllc" target="_blank" rel="noopener noreferrer" aria-label="TikTok">&#x1F3B5;</a>
+        <a href="mailto:info@shaveberry.com" aria-label="Email">&#x2709;&#xFE0F;</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Navbar scroll effect
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', function() {
+      nav.classList.toggle('scrolled', window.scrollY > 20);
+    });
+
+    // Mobile menu toggle
+    const hamburger = document.getElementById('hamburger');
+    const navLinks = document.getElementById('navLinks');
+    hamburger.addEventListener('click', function() {
+      navLinks.classList.toggle('open');
+    });
+    var links = navLinks.querySelectorAll('a');
+    for (var i = 0; i < links.length; i++) {
+      links[i].addEventListener('click', function() { navLinks.classList.remove('open'); });
+    }
+
+    // Scroll fade-in with IntersectionObserver
+    var faders = document.querySelectorAll('.fade-in');
+    var observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    faders.forEach(function(el) { observer.observe(el); });
+  </script>
 </body>
 </html>
