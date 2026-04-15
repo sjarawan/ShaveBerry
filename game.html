@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>Berry Bounce 🍓 A Shave Berry Game</title>
+  <meta name="description" content="Catch and bounce shaved berry desserts from the Shave Berry trailer to hungry customers! A cute mini game by Shave Berry." />
+  <meta property="og:title" content="Berry Bounce 🍓 A Shave Berry Game" />
+  <meta property="og:description" content="Bounce desserts to customers! Can you beat my score?" />
+  <meta property="og:url" content="https://www.shaveberry.com/game.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    html,body{height:100%;overflow:hidden;background:#87CEEB;font-family:'Nunito','Inter',sans-serif;-webkit-tap-highlight-color:transparent;user-select:none;touch-action:manipulation}
+    #gameContainer{position:relative;max-width:520px;height:100dvh;margin:0 auto;overflow:hidden}
+    #gameCanvas{display:block;width:100%;height:100%;touch-action:none}
+    #hud{position:absolute;top:0;left:0;right:0;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 0;z-index:10;display:flex;justify-content:space-between;align-items:flex-start;pointer-events:none;transition:opacity .3s}
+    #hud.hidden{opacity:0}
+    #livesDisplay{font-size:24px;text-shadow:0 2px 8px rgba(0,0,0,.1)}
+    #scoreDisplay{font-size:26px;font-weight:900;color:#C91E1E;text-shadow:0 2px 8px rgba(201,30,30,.15);transition:transform .1s}
+    #scoreDisplay.bump{transform:scale(1.25)}
+    .screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:20;background:rgba(255,248,245,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);transition:opacity .35s,transform .35s}
+    .screen.hidden{opacity:0;pointer-events:none;transform:scale(1.04)}
+    .screen-content{text-align:center;padding:28px 20px;width:100%;max-width:340px}
+    .game-emoji{font-size:52px;margin-bottom:4px;animation:bob 2.4s ease-in-out infinite}
+    @keyframes bob{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-10px) rotate(-3deg)}60%{transform:translateY(-5px) rotate(2deg)}}
+    .screen h1{font-size:36px;font-weight:900;color:#C91E1E;line-height:1.1;margin-bottom:6px}
+    .screen h1 small{display:block;font-size:14px;font-weight:700;color:#FFB5A7;letter-spacing:.12em;text-transform:uppercase;margin-bottom:2px}
+    .screen h2{font-size:26px;font-weight:900;color:#C91E1E;margin-bottom:4px}
+    .screen p{font-size:14px;color:#888;line-height:1.5;margin-bottom:6px}
+    .hint{font-size:12px!important;color:#bbb!important;margin-bottom:18px!important}
+    .stat-hero{font-size:58px;font-weight:900;color:#C91E1E;line-height:1}
+    .stat-hero-label{font-size:13px;font-weight:700;color:#FFB5A7;text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+    .stats-row{display:flex;justify-content:center;gap:22px;margin:14px 0 18px}
+    .stat-val{font-size:22px;font-weight:900;color:#333;line-height:1.2}
+    .stat-label{font-size:11px;font-weight:700;color:#bbb;text-transform:uppercase;letter-spacing:.08em}
+    .new-best{display:inline-block;background:linear-gradient(135deg,#FFD700,#FFB347);color:#fff;font-size:13px;font-weight:800;padding:4px 16px;border-radius:999px;margin-bottom:10px;animation:popIn .4s ease}
+    @keyframes popIn{0%{transform:scale(0)}60%{transform:scale(1.15)}100%{transform:scale(1)}}
+    .berry-btn{display:inline-block;background:#C91E1E;color:#fff;border:none;padding:13px 48px;border-radius:999px;font-family:inherit;font-size:16px;font-weight:800;cursor:pointer;transition:transform .12s,box-shadow .12s;box-shadow:0 4px 18px rgba(201,30,30,.3);margin-bottom:8px;touch-action:manipulation;position:relative;z-index:25}
+    .berry-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(201,30,30,.38)}
+    .berry-btn:active{transform:scale(.96)}
+    .outline-btn{display:inline-block;background:transparent;color:#C91E1E;border:2px solid rgba(201,30,30,.3);padding:10px 28px;border-radius:999px;font-family:inherit;font-size:14px;font-weight:700;cursor:pointer;transition:all .12s;margin-bottom:6px}
+    .outline-btn:hover{border-color:#C91E1E;background:#FFF0F0}
+    .back-link{display:inline-block;margin-top:10px;font-size:13px;font-weight:700;color:#ccc;text-decoration:none;transition:color .2s}
+    .back-link:hover{color:#C91E1E}
+    @media(prefers-reduced-motion:reduce){.game-emoji{animation:none}.screen{transition:none}}
+  </style>
+</head>
+<body>
+  <div id="gameContainer">
+    <canvas id="gameCanvas"></canvas>
+    <div id="hud" class="hidden">
+      <div id="livesDisplay"></div>
+      <div id="scoreDisplay">0</div>
+    </div>
+    <div id="startScreen" class="screen">
+      <div class="screen-content">
+        <div class="game-emoji">🍓</div>
+        <h1><small>Shave Berry presents</small>Berry Bounce</h1>
+        <p>Catch desserts from the trailer and bounce them to customers!</p>
+        <p class="hint">Move left &amp; right to catch &#8226; Don't let them drop!</p>
+        <button id="playBtn" class="berry-btn">Play!</button>
+        <br><a href="index.html" class="back-link">&larr; shaveberry.com</a>
+      </div>
+    </div>
+    <div id="gameOverScreen" class="screen hidden">
+      <div class="screen-content">
+        <div class="game-emoji">🍓</div>
+        <h2 id="gameOverTitle">Sweet!</h2>
+        <div id="newBest" class="new-best" style="display:none">&#10024; New Best! &#10024;</div>
+        <div class="stat-hero" id="finalScore">0</div>
+        <div class="stat-hero-label">desserts delivered</div>
+        <div class="stats-row">
+          <div><div class="stat-val" id="finalPoints">0</div><div class="stat-label">points</div></div>
+          <div><div class="stat-val" id="finalStreak">0</div><div class="stat-label">best streak</div></div>
+          <div><div class="stat-val" id="finalBest">0</div><div class="stat-label">record</div></div>
+        </div>
+        <button id="replayBtn" class="berry-btn">Play Again</button>
+        <br><button id="shareBtn" class="outline-btn">&#128203; Share Score</button>
+        <br><a href="index.html" class="back-link">&larr; shaveberry.com</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function() {
+    'use strict';
+    var PI  = Math.PI;
+    var PI2 = PI * 2;
+
+    /* ── Audio ── */
+    var audioCtx = null;
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+    function tone(f, d, v, type) {
+      if (!audioCtx) return;
+      try {
+        var o = audioCtx.createOscillator(), g = audioCtx.createGain();
+        o.type = type || 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(v || 0.1, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + d);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start(); o.stop(audioCtx.currentTime + d);
+      } catch(e) {}
+    }
+    function sfxCatch()    { tone(660,0.06,0.13); setTimeout(function(){tone(880,0.08,0.13)},60); }
+    function sfxDeliver()  { tone(523,0.06,0.12); setTimeout(function(){tone(659,0.06,0.12)},50); setTimeout(function(){tone(784,0.06,0.12)},100); setTimeout(function(){tone(1047,0.12,0.14)},160); }
+    function sfxSplat()    { tone(220,0.12,0.12,'triangle'); setTimeout(function(){tone(160,0.2,0.13,'triangle')},100); }
+    function sfxGameOver() { tone(440,0.1,0.1); setTimeout(function(){tone(370,0.1,0.1)},120); setTimeout(function(){tone(294,0.25,0.12)},250); }
+
+    /* ── DOM ── */
+    var canvas = document.getElementById('gameCanvas');
+    var ctx    = canvas.getContext('2d');
+    var $hud   = document.getElementById('hud');
+    var $lives = document.getElementById('livesDisplay');
+    var $score = document.getElementById('scoreDisplay');
+    var $start = document.getElementById('startScreen');
+    var $over  = document.getElementById('gameOverScreen');
+
+    /* ── Layout ── */
+    var W, H, dpr;
+    var groundY, trayYGlobal, mascotSize;
+    var trailerX, trailerW, trailerH, trailerLaunchX, trailerLaunchY;
+    var customerX, customerY;
+    var playMinX, playMaxX;
+
+    /* ── State ── */
+    var state = 'start';
+    var mascotX = 0, mascotTargetX = 0;
+    var mascotSquash = 0;
+    var lives = 3, score = 0, points = 0, streak = 0, maxStreak = 0, bestScore;
+    var desserts = [], particles = [], floats = [];
+    var spawnTimer = 0, spawnInterval = 2200, arcSpeed = 0.0085;
+    var customerHappy = 0;
+    var shakeAmount = 0;
+    var lastTime = 0;
+    var time = 0;
+
+    bestScore = parseInt(localStorage.getItem('bb_best') || '0', 10);
+
+    /* ── Input ── */
+    var inputX = -1;
+    var keysDown = {};
+
+    canvas.addEventListener('pointerdown', function(e) { if (state === 'playing') { e.preventDefault(); updPtr(e); } });
+    canvas.addEventListener('pointermove', function(e) { if (state === 'playing') { e.preventDefault(); updPtr(e); } });
+    function updPtr(e) {
+      var r = canvas.getBoundingClientRect();
+      inputX = (e.clientX - r.left) * (W / r.width);
+    }
+    document.addEventListener('keydown', function(e) { keysDown[e.code] = true; });
+    document.addEventListener('keyup',   function(e) { keysDown[e.code] = false; });
+
+    /* ── Resize ── */
+    function resize() {
+      var c = document.getElementById('gameContainer');
+      dpr = window.devicePixelRatio || 1;
+      W = c.clientWidth; H = c.clientHeight;
+      canvas.width = W * dpr; canvas.height = H * dpr;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      calcLayout();
+    }
+
+    function calcLayout() {
+      groundY    = H * 0.84;
+      mascotSize = Math.max(36, W * 0.13);
+
+      trailerW = W * 0.24;
+      trailerH = trailerW * 1.25;
+      trailerX = -trailerW * 0.06;
+      trailerLaunchX = trailerX + trailerW * 0.78;
+      trailerLaunchY = groundY - trailerH * 0.55;
+
+      var mascotTotalH = mascotSize * 1.95;
+      trayYGlobal = groundY - mascotTotalH;
+
+      customerX = W * 0.89;
+      customerY = groundY;
+
+      playMinX = trailerX + trailerW + mascotSize * 0.2;
+      playMaxX = customerX - mascotSize * 0.45;
+    }
+
+    /* ── Game Logic ── */
+    function startGame() {
+      initAudio();
+      state = 'playing';
+      lives = 3; score = 0; points = 0; streak = 0; maxStreak = 0;
+      desserts = []; particles = []; floats = [];
+      mascotX = (playMinX + playMaxX) * 0.5;
+      mascotTargetX = mascotX;
+      inputX = mascotX;
+      spawnInterval = 2200;
+      spawnTimer = 700;
+      arcSpeed = 0.0085;
+      customerHappy = 0; shakeAmount = 0;
+
+      $start.classList.add('hidden');
+      $over.classList.add('hidden');
+      $hud.classList.remove('hidden');
+      updateHUD();
+    }
+
+    function spawnDessert() {
+      var minLand = playMinX + mascotSize * 0.3;
+      var maxLand = playMaxX - mascotSize * 0.3;
+      var landX = minLand + Math.random() * (maxLand - minLand);
+
+      for (var tries = 0; tries < 8; tries++) {
+        var ok = true;
+        for (var j = 0; j < desserts.length; j++) {
+          if (desserts[j].seg === 0 && Math.abs(desserts[j].landX - landX) < mascotSize * 1.3) {
+            ok = false; break;
+          }
+        }
+        if (ok) break;
+        landX = minLand + Math.random() * (maxLand - minLand);
+      }
+
+      var peakH = H * (0.40 + Math.random() * 0.14);
+
+      desserts.push({
+        seg: 0, t: 0,
+        landX: landX,
+        s0: { sx: trailerLaunchX, sy: trailerLaunchY, ex: landX, ey: trayYGlobal, peak: peakH },
+        s1: { sx: landX, sy: trayYGlobal, ex: customerX, ey: customerY - 40, peak: H * 0.28 },
+        speed: arcSpeed,
+        state: 'flying',
+        rot: 0, rotSpd: (Math.random() - 0.5) * 0.04,
+        x: trailerLaunchX, y: trailerLaunchY
+      });
+    }
+
+    function arcPos(seg, t) {
+      var tt = Math.min(t, 1);
+      return {
+        x: seg.sx + (seg.ex - seg.sx) * tt,
+        y: seg.sy + (seg.ey - seg.sy) * tt - seg.peak * 4 * tt * (1 - tt)
+      };
+    }
+
+    function update(dt) {
+      if (state !== 'playing') return;
+      time += dt;
+
+      var kSpd = W * 0.009 * dt;
+      if (keysDown['ArrowLeft']  || keysDown['KeyA']) inputX -= kSpd;
+      if (keysDown['ArrowRight'] || keysDown['KeyD']) inputX += kSpd;
+      mascotTargetX = Math.max(playMinX, Math.min(playMaxX, inputX));
+      mascotX += (mascotTargetX - mascotX) * Math.min(1, 0.24 * dt);
+
+      if (mascotSquash > 0) mascotSquash = Math.max(0, mascotSquash - 0.045 * dt);
+      if (shakeAmount > 0) shakeAmount = Math.max(0, shakeAmount - 0.06 * dt);
+      if (customerHappy > 0) customerHappy = Math.max(0, customerHappy - 0.022 * dt);
+
+      spawnTimer -= dt * 16.67;
+      if (spawnTimer <= 0) { spawnDessert(); spawnTimer = spawnInterval; }
+
+      for (var i = desserts.length - 1; i >= 0; i--) {
+        var d = desserts[i];
+        if (d.state !== 'flying') { desserts.splice(i, 1); continue; }
+
+        d.t += d.speed * dt;
+        d.rot += d.rotSpd * dt;
+
+        var seg = d.seg === 0 ? d.s0 : d.s1;
+        var p = arcPos(seg, d.t);
+        d.x = p.x; d.y = p.y;
+
+        if (d.t >= 1) {
+          if (d.seg === 0) {
+            var dist = Math.abs(d.landX - mascotX);
+            if (dist < mascotSize * 0.62) {
+              doCatch(d);
+            } else {
+              doSplat(d, i);
+            }
+          } else {
+            doDeliver(d, i);
+          }
+        }
+      }
+
+      for (var pi = particles.length - 1; pi >= 0; pi--) {
+        var pt = particles[pi];
+        pt.x += pt.vx * dt; pt.y += pt.vy * dt; pt.vy += 0.05 * dt;
+        pt.life -= dt; pt.a = Math.max(0, pt.life / pt.ml);
+        if (pt.life <= 0) particles.splice(pi, 1);
+      }
+      for (var fi = floats.length - 1; fi >= 0; fi--) {
+        var fl = floats[fi];
+        fl.y += fl.vy * dt; fl.life -= dt; fl.a = Math.max(0, fl.life / fl.ml);
+        if (fl.life <= 0) floats.splice(fi, 1);
+      }
+
+      var diff = Math.min(score, 40);
+      spawnInterval = Math.max(650, 2200 - diff * 40);
+      arcSpeed = Math.min(0.019, 0.0085 + diff * 0.00028);
+    }
+
+    function doCatch(d) {
+      d.seg = 1; d.t = 0;
+      d.s1.sx = d.x; d.s1.sy = trayYGlobal;
+      d.rotSpd = -d.rotSpd;
+      d.speed = arcSpeed * 1.15;
+      mascotSquash = 1;
+      sfxCatch();
+      spawnBurst(d.x, trayYGlobal, 10, '#FFD700');
+      spawnBurst(d.x, trayYGlobal, 5, '#FF8CAD');
+    }
+
+    function doSplat(d, idx) {
+      d.state = 'splat';
+      desserts.splice(idx, 1);
+      lives--; streak = 0; shakeAmount = 1;
+      sfxSplat();
+      spawnBurst(d.landX, groundY - 4, 12, '#FFB5A7');
+      spawnBurst(d.landX, groundY - 4, 5, '#fff');
+      addFloat('Miss!', d.landX, groundY - 30, '#FF4D6D', 16);
+      updateHUD();
+      if (lives <= 0) setTimeout(gameOver, 500);
+    }
+
+    function doDeliver(d, idx) {
+      d.state = 'delivered';
+      desserts.splice(idx, 1);
+      score++; streak++;
+      if (streak > maxStreak) maxStreak = streak;
+      points += 10 + Math.min(streak, 10);
+      customerHappy = 1;
+      sfxDeliver();
+      spawnBurst(customerX, customerY - 45, 14, '#FFD700');
+      spawnBurst(customerX, customerY - 45, 8, '#FF8CAD');
+      if (streak > 2) addFloat(streak + 'x streak!', customerX - 10, customerY - 68, '#FF6B8A', 15);
+      updateHUD();
+    }
+
+    function gameOver() {
+      state = 'gameover';
+      sfxGameOver();
+      var isNew = score > bestScore;
+      if (isNew) { bestScore = score; localStorage.setItem('bb_best', String(bestScore)); }
+      setTimeout(function() {
+        var t;
+        if      (score < 3)  t = 'Nice try!';
+        else if (score < 8)  t = 'Sweet!';
+        else if (score < 15) t = 'Delicious!';
+        else if (score < 25) t = 'Amazing!';
+        else                 t = 'Berry Legend!';
+        document.getElementById('gameOverTitle').textContent = t + ' \uD83C\uDF53';
+        document.getElementById('newBest').style.display = isNew ? 'inline-block' : 'none';
+        document.getElementById('finalScore').textContent = score;
+        document.getElementById('finalPoints').textContent = points;
+        document.getElementById('finalStreak').textContent = maxStreak;
+        document.getElementById('finalBest').textContent = bestScore;
+        $hud.classList.add('hidden');
+        $over.classList.remove('hidden');
+      }, 400);
+    }
+
+    /* ── Effects ── */
+    function spawnBurst(cx, cy, n, color) {
+      for (var i = 0; i < n; i++) {
+        var a = PI2 * i / n + Math.random() * 0.5;
+        var s = 1.2 + Math.random() * 2.8;
+        particles.push({ x:cx, y:cy, vx:Math.cos(a)*s, vy:Math.sin(a)*s-1.8, r:1.5+Math.random()*2.5, c:color, a:1, life:30+Math.random()*20, ml:50 });
+      }
+    }
+    function addFloat(text, x, y, color, size) {
+      floats.push({ t:text, x:x, y:y, vy:-1.1, a:1, c:color, s:size, life:40, ml:40 });
+    }
+
+    /* ══════════════════════════════════
+       RENDER
+       ══════════════════════════════════ */
+    function render() {
+      ctx.clearRect(0, 0, W, H);
+      if (!W || !H) return;
+      ctx.save();
+      if (shakeAmount > 0) ctx.translate(Math.sin(time * 2.3) * shakeAmount * 4, Math.cos(time * 3.1) * shakeAmount * 2.5);
+
+      drawBackground();
+      drawTrailer();
+      drawCustomer();
+      drawLandingShadows();
+      drawMascotChar(mascotX, groundY);
+      drawDesserts();
+      drawParticles();
+      drawFloats();
+      ctx.restore();
+
+      if (state === 'playing') {
+        ctx.globalAlpha = 0.12; ctx.fillStyle = '#C91E1E';
+        ctx.font = '700 10px Nunito,sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('shaveberry.com', W / 2, H - 6); ctx.globalAlpha = 1;
+      }
+    }
+
+    /* ── Background ── */
+    function drawBackground() {
+      var sky = ctx.createLinearGradient(0, 0, 0, groundY);
+      sky.addColorStop(0, '#B8DFFF'); sky.addColorStop(0.6, '#D4EBFF'); sky.addColorStop(1, '#FFF8F0');
+      ctx.fillStyle = sky; ctx.fillRect(0, 0, W, groundY);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.65)';
+      drawCloud(W * 0.15, H * 0.10, 24);
+      drawCloud(W * 0.55, H * 0.07, 20);
+      drawCloud(W * 0.82, H * 0.16, 16);
+
+      var gr = ctx.createLinearGradient(0, groundY, 0, H);
+      gr.addColorStop(0, '#7EC850'); gr.addColorStop(0.15, '#6BB840'); gr.addColorStop(1, '#5A9E35');
+      ctx.fillStyle = gr; ctx.fillRect(0, groundY, W, H - groundY);
+      ctx.fillStyle = '#8DD860'; ctx.fillRect(0, groundY, W, 3);
+    }
+    function drawCloud(cx, cy, r) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, PI2);
+      ctx.arc(cx - r * 0.7, cy + r * 0.15, r * 0.7, 0, PI2);
+      ctx.arc(cx + r * 0.8, cy + r * 0.1, r * 0.65, 0, PI2);
+      ctx.fill();
+    }
+
+    /* ── Trailer ── */
+    function drawTrailer() {
+      var x = trailerX, y = groundY, tw = trailerW, th = trailerH;
+
+      ctx.fillStyle = 'rgba(0,0,0,0.05)';
+      ctx.beginPath(); ctx.ellipse(x + tw * 0.5, y + 4, tw * 0.52, 5, 0, 0, PI2); ctx.fill();
+
+      /* body */
+      ctx.fillStyle = '#F5C518';
+      ctx.beginPath(); ctx.roundRect(x, y - th, tw, th, [th * 0.26, th * 0.26, 5, 5]); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      ctx.beginPath(); ctx.roundRect(x + 3, y - th + 3, tw - 6, th * 0.32, [th * 0.22, th * 0.22, 0, 0]); ctx.fill();
+      ctx.strokeStyle = 'rgba(0,0,0,0.07)'; ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.roundRect(x, y - th, tw, th, [th * 0.26, th * 0.26, 5, 5]); ctx.stroke();
+
+      /* window */
+      var winX = x + tw * 0.42, winY = y - th * 0.78, winW = tw * 0.5, winH = th * 0.3;
+      ctx.fillStyle = '#3A2800';
+      ctx.beginPath(); ctx.roundRect(winX, winY, winW, winH, 4); ctx.fill();
+      ctx.fillStyle = '#E8B400'; ctx.fillRect(winX - 3, winY - 3, winW + 6, 4);
+      ctx.fillStyle = '#D0D0D0'; ctx.fillRect(winX - 2, winY + winH - 1, winW + 4, 3);
+
+      /* wheels */
+      var wr = Math.max(7, tw * 0.08);
+      [[0.3,wr],[0.65,wr]].forEach(function(w) {
+        ctx.fillStyle = '#333'; ctx.beginPath(); ctx.arc(x + tw * w[0], y + 1, w[1], 0, PI2); ctx.fill();
+        ctx.fillStyle = '#999'; ctx.beginPath(); ctx.arc(x + tw * w[0], y + 1, w[1] * 0.45, 0, PI2); ctx.fill();
+      });
+
+      /* logo on side */
+      drawMiniStrawberry(x + tw * 0.19, y - th * 0.45, th * 0.16);
+
+      ctx.fillStyle = '#333';
+      ctx.font = '800 ' + Math.max(7, tw * 0.085) + 'px Nunito,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('SHAVE', x + tw * 0.19, y - th * 0.61);
+      ctx.fillText('BERRY', x + tw * 0.19, y - th * 0.545);
+    }
+
+    function drawMiniStrawberry(cx, cy, s) {
+      ctx.fillStyle = '#C44040';
+      ctx.beginPath();
+      ctx.moveTo(cx, cy + s * 0.5);
+      ctx.quadraticCurveTo(cx - s * 0.55, cy + s * 0.1, cx - s * 0.45, cy - s * 0.22);
+      ctx.quadraticCurveTo(cx - s * 0.22, cy - s * 0.52, cx, cy - s * 0.45);
+      ctx.quadraticCurveTo(cx + s * 0.22, cy - s * 0.52, cx + s * 0.45, cy - s * 0.22);
+      ctx.quadraticCurveTo(cx + s * 0.55, cy + s * 0.1, cx, cy + s * 0.5);
+      ctx.fill();
+      ctx.fillStyle = '#6B9E3C';
+      ctx.beginPath(); ctx.ellipse(cx, cy - s * 0.52, s * 0.07, s * 0.16, 0, 0, PI2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx - s * 0.1, cy - s * 0.42, s * 0.055, s * 0.13, -0.4, 0, PI2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(cx + s * 0.1, cy - s * 0.42, s * 0.055, s * 0.13, 0.4, 0, PI2); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      [[-0.12,-0.1],[0.12,-0.1],[0,0.15],[-0.2,0.05],[0.2,0.05]].forEach(function(p) {
+        ctx.beginPath(); ctx.ellipse(cx+p[0]*s, cy+p[1]*s, s*0.025, s*0.03, 0.3, 0, PI2); ctx.fill();
+      });
+      ctx.fillStyle = '#222';
+      ctx.beginPath(); ctx.arc(cx - s * 0.1, cy - s * 0.07, s * 0.04, 0, PI2); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx + s * 0.1, cy - s * 0.07, s * 0.04, 0, PI2); ctx.fill();
+      ctx.strokeStyle = '#222'; ctx.lineWidth = Math.max(0.8, s * 0.02);
+      ctx.beginPath(); ctx.arc(cx, cy + s * 0.06, s * 0.055, 0.15 * PI, 0.85 * PI); ctx.stroke();
+    }
+
+    /* ── Customer ── */
+    function drawCustomer() {
+      var cx = customerX, gy = customerY;
+      var s = Math.max(24, mascotSize * 0.52);
+      var happy = customerHappy > 0;
+      var hB = happy ? Math.sin(customerHappy * PI * 3) * 2.5 : 0;
+      var cy = gy - hB;
+
+      ctx.fillStyle = 'rgba(0,0,0,0.04)';
+      ctx.beginPath(); ctx.ellipse(cx, gy + 2, s * 0.45, 3, 0, 0, PI2); ctx.fill();
+
+      /* body */
+      ctx.fillStyle = happy ? '#FF8CAD' : '#FFBDD6';
+      ctx.beginPath(); ctx.roundRect(cx - s * 0.33, cy - s * 1.05, s * 0.66, s * 0.62, [4,4,2,2]); ctx.fill();
+
+      /* arms */
+      ctx.strokeStyle = '#FFD1A6'; ctx.lineWidth = Math.max(2, s * 0.09); ctx.lineCap = 'round';
+      if (happy) {
+        ctx.beginPath(); ctx.moveTo(cx - s*0.33, cy - s*0.78); ctx.lineTo(cx - s*0.55, cy - s*1.25); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx + s*0.33, cy - s*0.78); ctx.lineTo(cx + s*0.55, cy - s*1.25); ctx.stroke();
+        ctx.fillStyle = '#FFD1A6';
+        ctx.beginPath(); ctx.arc(cx - s*0.55, cy - s*1.25, s*0.07, 0, PI2); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx + s*0.55, cy - s*1.25, s*0.07, 0, PI2); ctx.fill();
+      } else {
+        ctx.beginPath(); ctx.moveTo(cx - s*0.33, cy - s*0.78); ctx.lineTo(cx - s*0.56, cy - s*0.62); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx + s*0.33, cy - s*0.78); ctx.lineTo(cx + s*0.56, cy - s*0.62); ctx.stroke();
+        ctx.fillStyle = '#FFD1A6';
+        ctx.beginPath(); ctx.arc(cx - s*0.56, cy - s*0.62, s*0.07, 0, PI2); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx + s*0.56, cy - s*0.62, s*0.07, 0, PI2); ctx.fill();
+      }
+
+      /* head */
+      ctx.fillStyle = '#FFD5B0';
+      ctx.beginPath(); ctx.arc(cx, cy - s*1.3, s*0.3, 0, PI2); ctx.fill();
+      ctx.fillStyle = '#5C3D2E';
+      ctx.beginPath(); ctx.arc(cx, cy - s*1.38, s*0.31, PI, PI2); ctx.fill();
+      ctx.fillRect(cx - s*0.31, cy - s*1.38, s*0.62, s*0.07);
+
+      /* eyes */
+      if (happy) {
+        ctx.strokeStyle = '#222'; ctx.lineWidth = 1.3;
+        ctx.beginPath(); ctx.arc(cx - s*0.11, cy - s*1.32, s*0.055, PI, PI2); ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx + s*0.11, cy - s*1.32, s*0.055, PI, PI2); ctx.stroke();
+      } else {
+        ctx.fillStyle = '#222';
+        ctx.beginPath(); ctx.arc(cx - s*0.11, cy - s*1.31, s*0.035, 0, PI2); ctx.fill();
+        ctx.beginPath(); ctx.arc(cx + s*0.11, cy - s*1.31, s*0.035, 0, PI2); ctx.fill();
+      }
+      ctx.strokeStyle = '#222'; ctx.lineWidth = 1.1;
+      ctx.beginPath(); ctx.arc(cx, cy - s*1.2, s*0.06, 0.1*PI, 0.9*PI); ctx.stroke();
+
+      if (happy && customerHappy > 0.4) {
+        ctx.globalAlpha = customerHappy;
+        ctx.font = Math.round(s * 0.32) + 'px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('❤', cx - s*0.4, cy - s*1.6);
+        ctx.fillText('❤', cx + s*0.4, cy - s*1.5);
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    /* ══════════════════════════════════
+       MASCOT — Kawaii Strawberry
+       ══════════════════════════════════ */
+    function drawMascotChar(cx, gy) {
+      var s  = mascotSize;
+      var bw = s * 0.9;
+      var bh = bw * 1.1;
+      var squash = mascotSquash * 0.15;
+      var sx = 1 + squash * 0.4;
+      var sy = 1 - squash * 0.3;
+      var lean = (mascotTargetX - mascotX) * 0.001;
+      lean = Math.max(-0.13, Math.min(0.13, lean));
+      var moving = Math.abs(mascotTargetX - mascotX) > 2;
+      var runBounce = moving ? Math.sin(time * 0.5) * 1.5 : 0;
+
+      ctx.save();
+      ctx.translate(cx, gy + runBounce);
+      ctx.rotate(lean);
+      ctx.scale(sx, sy);
+
+      /* shadow */
+      ctx.fillStyle = 'rgba(0,0,0,0.06)';
+      ctx.beginPath(); ctx.ellipse(0, 3, bw * 0.38, 3.5, 0, 0, PI2); ctx.fill();
+
+      /* feet */
+      var footWiggle = moving ? Math.sin(time * 0.7) * 2.5 : 0;
+      ctx.fillStyle = '#C04040';
+      ctx.beginPath(); ctx.ellipse(-bw * 0.17, 2 + footWiggle, bw * 0.11, bw * 0.065, 0.1, 0, PI2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(bw * 0.17, 2 - footWiggle, bw * 0.11, bw * 0.065, -0.1, 0, PI2); ctx.fill();
+
+      var bodyBotY = -bw * 0.08;
+      var bodyTopY = bodyBotY - bh;
+      var bodyCY = (bodyBotY + bodyTopY) / 2;
+
+      var leafH  = bw * 0.24;
+      var trayOff = bw * 0.3;
+      var trayYL  = bodyTopY - leafH - trayOff;
+
+      /* arms */
+      ctx.strokeStyle = '#C04040'; ctx.lineWidth = bw * 0.065; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(-bw * 0.4, bodyCY - bh * 0.1); ctx.quadraticCurveTo(-bw * 0.5, trayYL + bh * 0.18, -bw * 0.32, trayYL + 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(bw * 0.4, bodyCY - bh * 0.1); ctx.quadraticCurveTo(bw * 0.5, trayYL + bh * 0.18, bw * 0.32, trayYL + 2); ctx.stroke();
+
+      /* hands */
+      ctx.fillStyle = '#D15050';
+      ctx.beginPath(); ctx.arc(-bw * 0.32, trayYL + 2, bw * 0.055, 0, PI2); ctx.fill();
+      ctx.beginPath(); ctx.arc(bw * 0.32, trayYL + 2, bw * 0.055, 0, PI2); ctx.fill();
+
+      /* tray */
+      var trayW = bw * 0.85;
+      ctx.fillStyle = '#E8E8E8';
+      ctx.beginPath(); ctx.roundRect(-trayW / 2, trayYL - 3, trayW, 5, 2.5); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.5)'; ctx.fillRect(-trayW / 2 + 1, trayYL - 3, trayW - 2, 2.5);
+
+      /* body (strawberry) */
+      ctx.fillStyle = '#C44040';
+      ctx.beginPath();
+      ctx.moveTo(0, bodyBotY);
+      ctx.quadraticCurveTo(-bw * 0.56, bodyBotY - bh * 0.12, -bw * 0.47, bodyCY + bh * 0.06);
+      ctx.quadraticCurveTo(-bw * 0.44, bodyTopY + bh * 0.1, -bw * 0.26, bodyTopY + bh * 0.01);
+      ctx.quadraticCurveTo(-bw * 0.1, bodyTopY - bh * 0.04, 0, bodyTopY);
+      ctx.quadraticCurveTo(bw * 0.1, bodyTopY - bh * 0.04, bw * 0.26, bodyTopY + bh * 0.01);
+      ctx.quadraticCurveTo(bw * 0.44, bodyTopY + bh * 0.1, bw * 0.47, bodyCY + bh * 0.06);
+      ctx.quadraticCurveTo(bw * 0.56, bodyBotY - bh * 0.12, 0, bodyBotY);
+      ctx.fill();
+
+      /* body highlight */
+      ctx.fillStyle = 'rgba(255,255,255,0.12)';
+      ctx.beginPath(); ctx.ellipse(-bw * 0.12, bodyCY - bh * 0.14, bw * 0.16, bh * 0.26, -0.2, 0, PI2); ctx.fill();
+
+      /* seeds */
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      [[-0.15,-0.16],[0.15,-0.16],[-0.23,0.03],[0.23,0.03],[-0.09,0.2],[0.09,0.2],[0,0.32]].forEach(function(p) {
+        ctx.beginPath(); ctx.ellipse(p[0]*bw, bodyCY + p[1]*bh, bw*0.02, bw*0.03, 0.3, 0, PI2); ctx.fill();
+      });
+
+      /* leaves */
+      ctx.fillStyle = '#6B9E3C';
+      ctx.beginPath(); ctx.ellipse(0, bodyTopY - leafH * 0.45, bw * 0.06, leafH * 0.5, 0, 0, PI2); ctx.fill();
+      ctx.save(); ctx.translate(-bw * 0.1, bodyTopY - leafH * 0.18); ctx.rotate(-0.45);
+      ctx.beginPath(); ctx.ellipse(0, 0, bw * 0.05, leafH * 0.45, 0, 0, PI2); ctx.fill(); ctx.restore();
+      ctx.save(); ctx.translate(bw * 0.1, bodyTopY - leafH * 0.18); ctx.rotate(0.45);
+      ctx.beginPath(); ctx.ellipse(0, 0, bw * 0.05, leafH * 0.45, 0, 0, PI2); ctx.fill(); ctx.restore();
+
+      /* face */
+      ctx.fillStyle = '#222';
+      ctx.beginPath(); ctx.ellipse(-bw * 0.125, bodyCY - bh * 0.07, bw * 0.038, bw * 0.046, 0, 0, PI2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(bw * 0.125, bodyCY - bh * 0.07, bw * 0.038, bw * 0.046, 0, 0, PI2); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(-bw * 0.11, bodyCY - bh * 0.09, bw * 0.015, 0, PI2); ctx.fill();
+      ctx.beginPath(); ctx.arc(bw * 0.14, bodyCY - bh * 0.09, bw * 0.015, 0, PI2); ctx.fill();
+      /* blush */
+      ctx.fillStyle = 'rgba(255,130,130,0.22)';
+      ctx.beginPath(); ctx.ellipse(-bw * 0.21, bodyCY + bh * 0.01, bw * 0.055, bw * 0.035, 0, 0, PI2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(bw * 0.21, bodyCY + bh * 0.01, bw * 0.055, bw * 0.035, 0, 0, PI2); ctx.fill();
+      /* smile */
+      ctx.strokeStyle = '#222'; ctx.lineWidth = bw * 0.02; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.arc(0, bodyCY + bh * 0.035, bw * 0.075, 0.12 * PI, 0.88 * PI); ctx.stroke();
+
+      ctx.restore();
+    }
+
+    /* ── Landing Shadows ── */
+    function drawLandingShadows() {
+      for (var i = 0; i < desserts.length; i++) {
+        var d = desserts[i];
+        if (d.state !== 'flying' || d.seg !== 0 || d.t < 0.32) continue;
+        var alpha = Math.min(1, (d.t - 0.32) / 0.68) * 0.22;
+        var r = 5 + alpha * 16;
+        ctx.fillStyle = 'rgba(201,30,30,' + alpha + ')';
+        ctx.beginPath(); ctx.ellipse(d.landX, groundY, r, 3, 0, 0, PI2); ctx.fill();
+      }
+    }
+
+    /* ── Desserts ── */
+    function drawDesserts() {
+      for (var i = 0; i < desserts.length; i++) {
+        var d = desserts[i];
+        if (d.state === 'flying') drawDessertItem(d.x, d.y, d.rot);
+      }
+    }
+    function drawDessertItem(x, y, rot) {
+      var s = Math.max(12, mascotSize * 0.32);
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rot || 0);
+
+      /* bowl */
+      ctx.fillStyle = 'rgba(220,230,240,0.55)';
+      ctx.strokeStyle = 'rgba(185,200,220,0.5)'; ctx.lineWidth = 0.8;
+      ctx.beginPath();
+      ctx.moveTo(-s * 0.52, 0); ctx.lineTo(-s * 0.38, s * 0.42);
+      ctx.quadraticCurveTo(0, s * 0.52, s * 0.38, s * 0.42);
+      ctx.lineTo(s * 0.52, 0); ctx.closePath();
+      ctx.fill(); ctx.stroke();
+
+      /* shaved strawberry layers */
+      ctx.fillStyle = '#FF9BB5';
+      ctx.beginPath(); ctx.ellipse(0, -s * 0.04, s * 0.45, s * 0.2, 0, 0, PI2); ctx.fill();
+      ctx.fillStyle = '#FFB5C8';
+      ctx.beginPath(); ctx.ellipse(-s * 0.04, -s * 0.2, s * 0.35, s * 0.16, -0.1, 0, PI2); ctx.fill();
+      ctx.fillStyle = '#FFF0EB';
+      ctx.beginPath(); ctx.ellipse(s * 0.02, -s * 0.34, s * 0.22, s * 0.12, 0.1, 0, PI2); ctx.fill();
+      ctx.fillStyle = '#FFFAF5';
+      ctx.beginPath(); ctx.ellipse(0, -s * 0.44, s * 0.1, s * 0.08, 0, 0, PI2); ctx.fill();
+
+      ctx.restore();
+    }
+
+    /* ── Particles & Floats ── */
+    function drawParticles() {
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        ctx.globalAlpha = p.a; ctx.fillStyle = p.c;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, PI2); ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+    function drawFloats() {
+      for (var i = 0; i < floats.length; i++) {
+        var f = floats[i];
+        ctx.globalAlpha = f.a;
+        ctx.font = '800 ' + f.s + 'px Nunito,sans-serif'; ctx.textAlign = 'center';
+        ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 3;
+        ctx.strokeText(f.t, f.x, f.y);
+        ctx.fillStyle = f.c; ctx.fillText(f.t, f.x, f.y);
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    /* ── HUD ── */
+    function updateHUD() {
+      var h = '';
+      for (var i = 0; i < 3; i++) h += i < lives ? '\u2764\uFE0F' : '\uD83E\uDD0D';
+      $lives.textContent = h;
+      $score.textContent = score;
+      $score.classList.add('bump');
+      setTimeout(function() { $score.classList.remove('bump'); }, 100);
+    }
+
+    /* ── UI ── */
+    var playBtn = document.getElementById('playBtn');
+    var replayBtn = document.getElementById('replayBtn');
+
+    function onPlay(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (state !== 'playing') startGame();
+    }
+    playBtn.addEventListener('click', onPlay);
+    playBtn.addEventListener('touchend', onPlay);
+    replayBtn.addEventListener('click', onPlay);
+    replayBtn.addEventListener('touchend', onPlay);
+
+    document.getElementById('shareBtn').addEventListener('click', function() {
+      var text = '\uD83C\uDF53 I delivered ' + score + ' desserts in Berry Bounce!\n' +
+                 maxStreak + 'x best streak \u2022 ' + points + ' pts\n\n' +
+                 'Can you beat me? \uD83C\uDFC6\nhttps://www.shaveberry.com/game.html';
+      if (navigator.share) {
+        navigator.share({ text: text, title: 'Berry Bounce Score' }).catch(function(){});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function() {
+          var btn = document.getElementById('shareBtn');
+          btn.textContent = '\u2713 Copied!';
+          setTimeout(function() { btn.innerHTML = '&#128203; Share Score'; }, 2000);
+        }).catch(function(){});
+      }
+    });
+
+    /* ── Loop ── */
+    function loop(ts) {
+      var dt = lastTime ? Math.min((ts - lastTime) / 16.67, 3) : 1;
+      lastTime = ts;
+      update(dt);
+      render();
+      requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('resize', resize);
+    document.addEventListener('visibilitychange', function() { if (document.hidden) lastTime = 0; });
+    resize();
+    requestAnimationFrame(loop);
+  })();
+  </script>
+</body>
+</html>

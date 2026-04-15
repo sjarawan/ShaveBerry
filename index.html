@@ -491,7 +491,66 @@
       transition: background .2s, transform .15s;
     }
     .footer-socials a:hover { background: var(--berry); transform: translateY(-2px); }
-
+    /* â"€â"€ Game Banner â"€â"€ */
+    #gameBanner {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1001;
+      height: 46px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #FFE4E6 0%, #FFF0F0 40%, #FFECD2 100%);
+      border-bottom: 1px solid rgba(201,30,30,.1);
+      gap: 8px;
+      padding: 0 48px 0 16px;
+    }
+    #gameBanner a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--dark);
+      font-size: 14px;
+      font-weight: 600;
+      transition: color .2s;
+    }
+    #gameBanner a:hover { color: var(--berry); }
+    .banner-badge {
+      background: var(--berry);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 8px;
+      border-radius: 999px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .banner-cta {
+      color: var(--berry);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .banner-close {
+      position: absolute;
+      right: 12px; top: 50%;
+      transform: translateY(-50%);
+      background: none; border: 0;
+      font-size: 20px;
+      color: var(--light-gray);
+      cursor: pointer;
+      padding: 4px 8px;
+      line-height: 1;
+      transition: color .2s;
+    }
+    .banner-close:hover { color: var(--berry); }
+    .banner-active nav#navbar { top: 46px; }
+    .banner-active .hero { padding-top: calc(72px + 46px); }
+    @media (max-width: 480px) {
+      #gameBanner a { font-size: 12px; gap: 6px; }
+      .banner-badge { font-size: 10px; padding: 2px 6px; }
+    }
     /* â”€â”€ Animations â”€â”€ */
     @keyframes fadeUp {
       to { opacity: 1; transform: translateY(0); }
@@ -537,7 +596,17 @@
     }
   </style>
 </head>
-<body>
+<body class="banner-active">
+
+  <!-- â"€â"€â"€ Game Banner â"€â"€â"€ -->
+  <div id="gameBanner">
+    <a href="game.html">
+      <span class="banner-badge">New</span>
+      <span>&#x1F353; Play <strong>Berry Bounce</strong> &mdash; catch desserts &amp; deliver to customers!</span>
+      <span class="banner-cta">Play Now &rarr;</span>
+    </a>
+    <button class="banner-close" id="closeBanner" aria-label="Close banner">&times;</button>
+  </div>
 
   <!-- â”€â”€â”€ Navigation â”€â”€â”€ -->
   <nav id="navbar">
@@ -547,6 +616,7 @@
         <li><a href="#menu">Menu</a></li>
         <li><a href="#schedule">Schedule</a></li>
         <li><a href="#about">Our Story</a></li>
+        <li><a href="game.html" style="color:var(--berry);font-weight:700;">&#x1F3AE; Berry Bounce</a></li>
         <li><a href="#events" class="nav-cta">Book Our Trailer</a></li>
       </ul>
       <button class="hamburger" id="hamburger" aria-label="Toggle menu">
@@ -761,6 +831,7 @@
         <a href="#menu">Menu</a>
         <a href="#schedule">Weekly Schedule</a>
         <a href="#about">Our Story</a>
+        <a href="game.html">&#x1F3AE; Berry Bounce</a>
         <a href="#events">Book Our Trailer</a>
       </div>
       <div class="footer-col">
@@ -815,6 +886,16 @@
       });
     }, { threshold: 0.15 });
     faders.forEach(function(el) { observer.observe(el); });
+
+    // Game banner dismiss
+    var closeBannerBtn = document.getElementById('closeBanner');
+    if (closeBannerBtn) {
+      closeBannerBtn.addEventListener('click', function() {
+        var banner = document.getElementById('gameBanner');
+        if (banner) banner.remove();
+        document.body.classList.remove('banner-active');
+      });
+    }
   </script>
 </body>
 </html>
