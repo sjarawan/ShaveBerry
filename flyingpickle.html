@@ -620,7 +620,7 @@ document.getElementById('replayBtn').addEventListener('touchend',onPlay);
 document.getElementById('shareBtn').addEventListener('click',function(){
   var txt='\uD83C\uDFD3 Kitchen Chaos by The Flying Pickle \uD83E\uDD52\n'+
     'Score: '+sc.toLocaleString()+' | Returns: '+returns+' | Best streak: '+maxStreak+'\n'+
-    'Can you survive the chaos? theflyingpickle.com/dink';
+    'Can you survive the chaos? www.shaveberry.com/flyingpickle.html';
   if(navigator.share)navigator.share({text:txt,title:'Kitchen Chaos Score'}).catch(function(){});
   else if(navigator.clipboard)navigator.clipboard.writeText(txt).then(function(){
     var b=document.getElementById('shareBtn');b.textContent='\u2713 Copied!';
