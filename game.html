@@ -92,14 +92,40 @@
 
     /* ── Audio (rich synthesized SFX) ── */
     var audioCtx = null;
+    var audioUnlocked = false;
+
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
+    /* Unlock audio on first user gesture (required by mobile browsers / iOS) */
+    function unlockAudio() {
+      initAudio();
+      if (audioUnlocked) return;
+      /* Play a tiny silent buffer to fully unlock iOS audio output */
+      try {
+        var buf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+        var src = audioCtx.createBufferSource();
+        src.buffer = buf;
+        src.connect(audioCtx.destination);
+        src.start(0);
+      } catch(e) {}
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume().then(function() { audioUnlocked = true; });
+      } else {
+        audioUnlocked = true;
+      }
+    }
+    /* Bind unlock to common first-interaction events */
+    ['touchstart','touchend','mousedown','click','keydown'].forEach(function(evt) {
+      document.addEventListener(evt, unlockAudio, { once: true, capture: true });
+    });
+
     /* Helper: play a note with envelope */
     function note(freq, dur, vol, type, delay) {
       if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       try {
         var t0 = audioCtx.currentTime + (delay || 0);
         var o = audioCtx.createOscillator();
@@ -116,6 +142,7 @@
     /* Helper: frequency sweep for whoosh/splat */
     function sweep(startF, endF, dur, vol, type, delay) {
       if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       try {
         var t0 = audioCtx.currentTime + (delay || 0);
         var o = audioCtx.createOscillator();
@@ -133,6 +160,7 @@
     /* Helper: noise burst (for splat texture) */
     function noiseBurst(dur, vol, delay) {
       if (!audioCtx) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
       try {
         var t0 = audioCtx.currentTime + (delay || 0);
         var bufSize = Math.floor(audioCtx.sampleRate * dur);
