@@ -228,7 +228,77 @@
       transform: translateY(-2px);
     }
 
-    /* â”€â”€ Features / What We Serve â”€â”€ */
+    /* ── Trailer Showcase ── */
+    .trailer-showcase {
+      background: var(--white);
+      padding: 80px 24px;
+    }
+    .trailer-showcase .container {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 56px;
+      align-items: center;
+    }
+    .trailer-photo {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      aspect-ratio: 4/3;
+      background: var(--cream);
+    }
+    .trailer-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s ease;
+    }
+    .trailer-photo:hover img { transform: scale(1.03); }
+    .trailer-photo .photo-tag {
+      position: absolute;
+      bottom: 16px;
+      left: 16px;
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(8px);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--berry);
+      box-shadow: var(--shadow-sm);
+    }
+    .trailer-text h2 {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .trailer-text p {
+      color: var(--gray);
+      font-size: 16px;
+      line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .trailer-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .trailer-features span {
+      background: var(--berry-light);
+      color: var(--berry);
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    @media (max-width: 900px) {
+      .trailer-showcase .container { grid-template-columns: 1fr; gap: 32px; }
+    }
+
+    /* ── Features / What We Serve ── */
     .features { background: var(--white); }
     .features-grid {
       display: grid;
@@ -298,6 +368,31 @@
       font-weight: 600;
       margin-top: 4px;
     }
+    .coming-soon-badge {
+      display: inline-block;
+      background: var(--berry);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+    .schedule-tentative {
+      background: #fff8e1;
+      border: 1px dashed #e0b400;
+      color: #6b5200;
+      border-radius: var(--radius-md, 12px);
+      padding: 14px 18px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .schedule-list { position: relative; }
+    .schedule-list .schedule-card { opacity: .85; }
     .schedule-note {
       background: var(--white);
       border-radius: var(--radius-lg);
@@ -320,6 +415,7 @@
     .social-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
     .social-btn.instagram { background: linear-gradient(135deg, #833AB4, #FD1D1D, #F77737); color: #fff; }
     .social-btn.tiktok { background: #000; color: #fff; }
+    .social-btn.facebook { background: #1877F2; color: #fff; }
 
     /* â”€â”€ About / Story â”€â”€ */
     .about { background: var(--white); }
@@ -338,7 +434,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 120px;
       box-shadow: var(--shadow-lg);
     }
     .about-text h3 {
@@ -428,6 +523,44 @@
       font-weight: 600;
       font-size: 14px;
       color: var(--dark);
+    }
+    .social-grid.preview .social-card {
+      filter: grayscale(1);
+      opacity: .55;
+      pointer-events: none;
+    }
+    .social-grid.preview .social-card .stars { color: var(--light-gray); }
+    .reviews-coming-soon {
+      max-width: 640px;
+      margin: 32px auto 0;
+      background: var(--cream);
+      border: 1px dashed var(--berry);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      text-align: center;
+    }
+    .reviews-coming-soon .badge {
+      display: inline-block;
+      background: var(--berry);
+      color: var(--white);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+    .reviews-coming-soon h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; color: var(--dark); }
+    .reviews-coming-soon p { font-size: 14px; color: var(--gray); line-height: 1.6; }
+    .preview-label {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--light-gray);
+      margin-top: 20px;
     }
 
     /* â”€â”€ Footer â”€â”€ */
@@ -547,6 +680,91 @@
     .banner-close:hover { color: var(--berry); }
     .banner-active nav#navbar { top: 46px; }
     .banner-active .hero { padding-top: calc(72px + 46px); }
+
+    /* ── Hero Social Row ── */
+    .hero-social {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      opacity: 0;
+      animation: fadeUp .8s ease .85s forwards;
+    }
+    .hero-social-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--gray);
+    }
+    .hero-social-icons {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .hero-social-icons a {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 6px 20px rgba(0,0,0,.12);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .hero-social-icons a:hover,
+    .hero-social-icons a:focus-visible {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 12px 28px rgba(0,0,0,.18);
+    }
+    .hero-social-icons a svg { width: 26px; height: 26px; fill: currentColor; }
+    .hero-social-icons .ig { background: linear-gradient(135deg, #833AB4, #FD1D1D, #F77737, #FCAF45); }
+    .hero-social-icons .tt { background: #000; }
+    .hero-social-icons .fb { background: #1877F2; }
+
+    /* ── Floating Social Bar (mobile) ── */
+    .social-fab {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px 10px 18px;
+      background: rgba(255,255,255,.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 999px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.18), 0 0 0 1px rgba(0,0,0,.04);
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+    }
+    .social-fab .fab-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--dark);
+      letter-spacing: .02em;
+    }
+    .social-fab .fab-icons { display: flex; gap: 8px; }
+    .social-fab a {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      transition: transform .15s;
+    }
+    .social-fab a:active { transform: scale(0.92); }
+    .social-fab a svg { width: 20px; height: 20px; fill: currentColor; }
+    .social-fab .ig { background: linear-gradient(135deg, #833AB4, #FD1D1D, #F77737, #FCAF45); }
+    .social-fab .tt { background: #000; }
+    .social-fab .fb { background: #1877F2; }
     @media (max-width: 480px) {
       #gameBanner a { font-size: 12px; gap: 6px; }
       .banner-badge { font-size: 10px; padding: 2px 6px; }
@@ -587,6 +805,8 @@
       .footer-grid { grid-template-columns: 1fr; }
       .schedule-follow { flex-direction: column; }
       .hero-buttons { flex-direction: column; align-items: center; }
+      .social-fab { display: flex; }
+      body { padding-bottom: 80px; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -597,6 +817,22 @@
   </style>
 </head>
 <body class="banner-active">
+
+  <!-- Floating mobile social bar -->
+  <div class="social-fab" aria-label="Follow Shave Berry on social media">
+    <span class="fab-label">Follow us</span>
+    <div class="fab-icons">
+      <a href="https://www.instagram.com/shaveberryco" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.07 1.25.07 1.65.07 4.85s0 3.6-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.25.07-1.65.07-4.85.07s-3.6 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.15 0-3.52 0-4.76.07-.97.04-1.5.2-1.86.34-.46.18-.79.4-1.14.74-.34.34-.56.68-.74 1.14-.14.36-.3.89-.34 1.86C3.07 8.48 3.07 8.85 3.07 12s0 3.52.07 4.76c.04.97.2 1.5.34 1.86.18.46.4.79.74 1.14.34.34.68.56 1.14.74.36.14.89.3 1.86.34 1.24.07 1.61.07 4.76.07s3.52 0 4.76-.07c.97-.04 1.5-.2 1.86-.34.46-.18.79-.4 1.14-.74.34-.34.56-.68.74-1.14.14-.36.3-.89.34-1.86.07-1.24.07-1.61.07-4.76s0-3.52-.07-4.76c-.04-.97-.2-1.5-.34-1.86a3 3 0 0 0-.74-1.14 3 3 0 0 0-1.14-.74c-.36-.14-.89-.3-1.86-.34C15.52 4 15.15 4 12 4zm0 3.06a4.94 4.94 0 1 1 0 9.88 4.94 4.94 0 0 1 0-9.88zm0 1.8a3.14 3.14 0 1 0 0 6.28 3.14 3.14 0 0 0 0-6.28zm5.15-2.04a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3z"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@shaveberryllc" target="_blank" rel="noopener noreferrer" class="tt" aria-label="TikTok">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.6 6.7c-1.4-.3-2.5-1.2-3.2-2.3-.4-.7-.6-1.5-.6-2.4h-3.5v13.5c0 1.5-1.3 2.8-2.8 2.8-1.6 0-2.8-1.3-2.8-2.8s1.3-2.8 2.8-2.8c.3 0 .6.05.9.15v-3.6a6.4 6.4 0 0 0-.9-.06A6.35 6.35 0 0 0 3.1 15.5a6.35 6.35 0 0 0 6.4 6.35c3.5 0 6.35-2.85 6.35-6.35V9.1c1.4.95 3.05 1.5 4.85 1.5V7.05c-.4 0-.75-.05-1.1-.35z"/></svg>
+      </a>
+      <a href="https://www.facebook.com/shaveberryco" target="_blank" rel="noopener noreferrer" class="fb" aria-label="Facebook">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.7-3.9 1.1 0 2.2.2 2.2.2v2.45h-1.25c-1.23 0-1.6.76-1.6 1.55V12h2.74l-.44 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>
+      </a>
+    </div>
+  </div>
 
   <!-- â"€â"€â"€ Game Banner â"€â"€â"€ -->
   <div id="gameBanner">
@@ -635,6 +871,42 @@
         <a href="#schedule" class="btn btn-primary">&#x1F4CD; Find Us This Week</a>
         <a href="#about" class="btn btn-outline">Our Story &rarr;</a>
       </div>
+      <div class="hero-social">
+        <span class="hero-social-label">Follow for daily updates</span>
+        <div class="hero-social-icons">
+          <a href="https://www.instagram.com/shaveberryco" target="_blank" rel="noopener noreferrer" class="ig" aria-label="Follow Shave Berry on Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.2c3.2 0 3.6 0 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.07 1.25.07 1.65.07 4.85s0 3.6-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.25.07-1.65.07-4.85.07s-3.6 0-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 0 1-1.38-.9 3.7 3.7 0 0 1-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.4 2.2 8.8 2.2 12 2.2zm0 1.8c-3.15 0-3.52 0-4.76.07-.97.04-1.5.2-1.86.34-.46.18-.79.4-1.14.74-.34.34-.56.68-.74 1.14-.14.36-.3.89-.34 1.86C3.07 8.48 3.07 8.85 3.07 12s0 3.52.07 4.76c.04.97.2 1.5.34 1.86.18.46.4.79.74 1.14.34.34.68.56 1.14.74.36.14.89.3 1.86.34 1.24.07 1.61.07 4.76.07s3.52 0 4.76-.07c.97-.04 1.5-.2 1.86-.34.46-.18.79-.4 1.14-.74.34-.34.56-.68.74-1.14.14-.36.3-.89.34-1.86.07-1.24.07-1.61.07-4.76s0-3.52-.07-4.76c-.04-.97-.2-1.5-.34-1.86a3 3 0 0 0-.74-1.14 3 3 0 0 0-1.14-.74c-.36-.14-.89-.3-1.86-.34C15.52 4 15.15 4 12 4zm0 3.06a4.94 4.94 0 1 1 0 9.88 4.94 4.94 0 0 1 0-9.88zm0 1.8a3.14 3.14 0 1 0 0 6.28 3.14 3.14 0 0 0 0-6.28zm5.15-2.04a1.15 1.15 0 1 1 0 2.3 1.15 1.15 0 0 1 0-2.3z"/></svg>
+          </a>
+          <a href="https://www.tiktok.com/@shaveberryllc" target="_blank" rel="noopener noreferrer" class="tt" aria-label="Follow Shave Berry on TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.6 6.7c-1.4-.3-2.5-1.2-3.2-2.3-.4-.7-.6-1.5-.6-2.4h-3.5v13.5c0 1.5-1.3 2.8-2.8 2.8-1.6 0-2.8-1.3-2.8-2.8s1.3-2.8 2.8-2.8c.3 0 .6.05.9.15v-3.6a6.4 6.4 0 0 0-.9-.06A6.35 6.35 0 0 0 3.1 15.5a6.35 6.35 0 0 0 6.4 6.35c3.5 0 6.35-2.85 6.35-6.35V9.1c1.4.95 3.05 1.5 4.85 1.5V7.05c-.4 0-.75-.05-1.1-.35z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/shaveberryco" target="_blank" rel="noopener noreferrer" class="fb" aria-label="Follow Shave Berry on Facebook">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.7-3.9 1.1 0 2.2.2 2.2.2v2.45h-1.25c-1.23 0-1.6.76-1.6 1.55V12h2.74l-.44 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trailer Showcase -->
+  <section class="trailer-showcase">
+    <div class="container fade-in">
+      <div class="trailer-photo">
+        <img src="trailer.jpg" alt="The Shave Berry mobile dessert trailer" loading="lazy" />
+        <span class="photo-tag">&#x1F353; Our Trailer</span>
+      </div>
+      <div class="trailer-text">
+        <span class="section-label">Spot Us On The Road</span>
+        <h2>Look for the bright Shave Berry trailer</h2>
+        <p>Our fully self-contained mobile dessert trailer is rolling through Boise, Meridian, and Eagle &mdash; popping up at farmers markets, festivals, and private events all season long.</p>
+        <p>Hard to miss and easy to love. When you see us, come say hi!</p>
+        <div class="trailer-features">
+          <span>&#x2744;&#xFE0F; Fully refrigerated</span>
+          <span>&#x26A1; Self-powered</span>
+          <span>&#x1F69A; Travels anywhere</span>
+          <span>&#x1F389; Event ready</span>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -668,12 +940,16 @@
   <section class="schedule" id="schedule">
     <div class="container fade-in">
       <span class="section-label">Find Our Trailer</span>
+      <span class="coming-soon-badge">Coming Soon</span>
       <h2 class="section-title">Upcoming schedule</h2>
       <p class="section-subtitle">We alternate Saturdays between the Boise Farmers Market and the Nampa Farmers Market. Follow us on social media for updates!</p>
       <div class="schedule-wrapper">
         <div class="schedule-list">
+          <div class="schedule-tentative">
+            <strong>Heads up!</strong> Dates and times below are tentative and not yet locked in. Final schedule coming soon &mdash; follow us on social for confirmed stops.
+          </div>
           <div class="schedule-card">
-            <div class="schedule-day"><span class="day-name">Sat</span><span class="day-num">18</span></div>
+            <div class="schedule-day"><span class="day-name">Sat May</span><span class="day-num">2</span></div>
             <div class="schedule-info">
               <h4>Boise Farmers Market</h4>
               <p>Downtown Boise, 10th &amp; Grove St</p>
@@ -681,7 +957,7 @@
             </div>
           </div>
           <div class="schedule-card">
-            <div class="schedule-day"><span class="day-name">Sat</span><span class="day-num">25</span></div>
+            <div class="schedule-day"><span class="day-name">Sat May</span><span class="day-num">9</span></div>
             <div class="schedule-info">
               <h4>Nampa Farmers Market</h4>
               <p>Downtown Nampa, Lloyd Square</p>
@@ -689,7 +965,7 @@
             </div>
           </div>
           <div class="schedule-card">
-            <div class="schedule-day"><span class="day-name">Sat</span><span class="day-num">2</span></div>
+            <div class="schedule-day"><span class="day-name">Sat May</span><span class="day-num">16</span></div>
             <div class="schedule-info">
               <h4>Boise Farmers Market</h4>
               <p>Downtown Boise, 10th &amp; Grove St</p>
@@ -697,7 +973,7 @@
             </div>
           </div>
           <div class="schedule-card">
-            <div class="schedule-day"><span class="day-name">Sat</span><span class="day-num">9</span></div>
+            <div class="schedule-day"><span class="day-name">Sat May</span><span class="day-num">23</span></div>
             <div class="schedule-info">
               <h4>Nampa Farmers Market</h4>
               <p>Downtown Nampa, Lloyd Square</p>
@@ -716,6 +992,9 @@
             <a href="https://www.tiktok.com/@shaveberryllc" target="_blank" rel="noopener noreferrer" class="social-btn tiktok">
               &#x1F3B5; @shaveberryllc
             </a>
+            <a href="https://www.facebook.com/shaveberryco" target="_blank" rel="noopener noreferrer" class="social-btn facebook">
+              &#x1F44D; @shaveberryco
+            </a>
           </div>
         </div>
       </div>
@@ -728,10 +1007,72 @@
       <span class="section-label">Our Story</span>
       <h2 class="section-title">From Tokyo streets to Boise treats</h2>
       <div class="about-grid">
-        <div class="about-image">&#x1F1EF;&#x1F1F5;</div>
+        <div class="about-image" aria-label="Tokyo to Boise">
+          <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" style="width:100%;height:100%;display:block;">
+            <defs>
+              <linearGradient id="bgSky" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#FFE4E6"/>
+                <stop offset="60%" stop-color="#FFF0F0"/>
+                <stop offset="100%" stop-color="#FFF8F0"/>
+              </linearGradient>
+              <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#FF4757"/>
+                <stop offset="100%" stop-color="#C91E1E"/>
+              </radialGradient>
+              <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#FF6B7A" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#FF6B7A" stop-opacity="0"/>
+              </radialGradient>
+              <symbol id="blossom" viewBox="-20 -20 40 40">
+                <g>
+                  <ellipse cx="0" cy="-12" rx="6" ry="10" fill="#FFC1CC"/>
+                  <ellipse cx="0" cy="-12" rx="6" ry="10" fill="#FFC1CC" transform="rotate(72)"/>
+                  <ellipse cx="0" cy="-12" rx="6" ry="10" fill="#FFC1CC" transform="rotate(144)"/>
+                  <ellipse cx="0" cy="-12" rx="6" ry="10" fill="#FFC1CC" transform="rotate(216)"/>
+                  <ellipse cx="0" cy="-12" rx="6" ry="10" fill="#FFC1CC" transform="rotate(288)"/>
+                  <circle cx="0" cy="0" r="3" fill="#F8B500"/>
+                </g>
+              </symbol>
+            </defs>
+            <!-- Background -->
+            <rect width="400" height="500" fill="url(#bgSky)"/>
+            <!-- Soft sun glow -->
+            <circle cx="200" cy="250" r="180" fill="url(#sunGlow)"/>
+            <!-- Japanese flag sun -->
+            <circle cx="200" cy="250" r="115" fill="url(#sun)" opacity="0.95"/>
+            <!-- Cherry blossom branch -->
+            <g stroke="#5C3317" stroke-width="4" stroke-linecap="round" fill="none">
+              <path d="M -10 80 Q 60 100 130 70 Q 200 45 290 60 Q 360 70 410 50"/>
+              <path d="M 150 65 Q 170 30 200 20"/>
+              <path d="M 250 60 Q 270 90 300 110"/>
+              <path d="M 90 85 Q 100 110 110 130"/>
+            </g>
+            <!-- Blossoms on branch -->
+            <use href="#blossom" x="60" y="95" width="36" height="36"/>
+            <use href="#blossom" x="110" y="75" width="30" height="30"/>
+            <use href="#blossom" x="160" y="50" width="34" height="34"/>
+            <use href="#blossom" x="195" y="15" width="28" height="28"/>
+            <use href="#blossom" x="220" y="60" width="32" height="32"/>
+            <use href="#blossom" x="275" y="50" width="36" height="36"/>
+            <use href="#blossom" x="295" y="100" width="28" height="28"/>
+            <use href="#blossom" x="330" y="55" width="30" height="30"/>
+            <use href="#blossom" x="105" y="125" width="26" height="26"/>
+            <!-- Falling petals -->
+            <g fill="#FFB7C5" opacity="0.85">
+              <ellipse cx="50" cy="220" rx="5" ry="8" transform="rotate(20 50 220)"/>
+              <ellipse cx="360" cy="260" rx="5" ry="8" transform="rotate(-30 360 260)"/>
+              <ellipse cx="70" cy="380" rx="5" ry="8" transform="rotate(45 70 380)"/>
+              <ellipse cx="330" cy="410" rx="5" ry="8" transform="rotate(-15 330 410)"/>
+              <ellipse cx="180" cy="450" rx="5" ry="8" transform="rotate(60 180 450)"/>
+              <ellipse cx="260" cy="460" rx="5" ry="8" transform="rotate(-40 260 460)"/>
+              <ellipse cx="30" cy="320" rx="4" ry="6" transform="rotate(10 30 320)"/>
+              <ellipse cx="380" cy="340" rx="4" ry="6" transform="rotate(-50 380 340)"/>
+            </g>
+          </svg>
+        </div>
         <div class="about-text">
           <h3>A father-daughter trip that changed everything</h3>
-          <p>In 2025, my daughter and I traveled to Tokyo. After taking in the electric energy of the famous Shibuya Crossing, we wandered down a side street and stumbled upon a tiny dessert shop with a line out the door. Inside, they were shaving frozen whole strawberries into the most incredible dessert we'd ever tasted &mdash; light as snow, bursting with natural sweetness, and topped with a silky cream that made it feel like a dream.</p>
+          <p>In 2025, my daughter and I traveled to Tokyo. After taking in the electric energy of the famous Shibuya Crossing, we wandered down a side street and stumbled upon a tiny dessert shop. Inside, they were shaving frozen whole strawberries into the most incredible dessert we'd ever tasted &mdash; light as snow, bursting with natural sweetness, and topped with a silky cream that made it feel like a dream.</p>
           <p>We were hooked. We went back three more times before our trip ended.</p>
           <p>When we got home to Boise, we searched everywhere &mdash; grocery stores, dessert shops, farmers markets. <strong>Nobody in North America was making it.</strong></p>
           <p>So we decided to bring it here ourselves. We bought a trailer, perfected the recipe, and Shave Berry was born &mdash; a little piece of Tokyo, rolling through the streets of Boise, Idaho.</p>
@@ -798,22 +1139,28 @@
   <section class="social-section" id="reviews">
     <div class="container fade-in">
       <span class="section-label">What People Say</span>
-      <h2 class="section-title">Boise is obsessed</h2>
-      <div class="social-grid">
+      <h2 class="section-title">Reviews coming soon</h2>
+      <div class="reviews-coming-soon">
+        <span class="badge">Coming Soon</span>
+        <h3>We're just getting started! &#x1F353;</h3>
+        <p>Real customer reviews will appear here once we hit the streets. Be one of our first &mdash; visit us at a farmers market this May and share your experience on social media!</p>
+      </div>
+      <div class="preview-label">Sample preview</div>
+      <div class="social-grid preview" aria-hidden="true">
         <div class="social-card">
           <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p>"I literally thought this was ice cream at first. It's SO creamy and light. My kids won't stop asking when Shave Berry is coming back to our neighborhood."</p>
-          <div class="reviewer">&mdash; Sarah M., Meridian</div>
+          <div class="reviewer">&mdash; Sample review</div>
         </div>
         <div class="social-card">
           <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p>"I've been to Tokyo and had the original. This is the real deal. Can't believe I can get it in Boise now."</p>
-          <div class="reviewer">&mdash; Jason K., Boise</div>
+          <div class="reviewer">&mdash; Sample review</div>
         </div>
         <div class="social-card">
           <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
           <p>"We hired Shave Berry for our company picnic and it was the highlight. Everyone was raving. Already booked them again."</p>
-          <div class="reviewer">&mdash; Priya D., Eagle</div>
+          <div class="reviewer">&mdash; Sample review</div>
         </div>
       </div>
     </div>
@@ -838,6 +1185,7 @@
         <h4>Connect</h4>
         <a href="https://www.instagram.com/shaveberryco" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="https://www.tiktok.com/@shaveberryllc" target="_blank" rel="noopener noreferrer">TikTok</a>
+        <a href="https://www.facebook.com/shaveberryco" target="_blank" rel="noopener noreferrer">Facebook</a>
         <a href="mailto:info@shaveberry.com">info@shaveberry.com</a>
       </div>
       <div class="footer-col">
@@ -852,6 +1200,7 @@
       <div class="footer-socials">
         <a href="https://www.instagram.com/shaveberryco" target="_blank" rel="noopener noreferrer" aria-label="Instagram">&#x1F4F8;</a>
         <a href="https://www.tiktok.com/@shaveberryllc" target="_blank" rel="noopener noreferrer" aria-label="TikTok">&#x1F3B5;</a>
+        <a href="https://www.facebook.com/shaveberryco" target="_blank" rel="noopener noreferrer" aria-label="Facebook">&#x1F44D;</a>
         <a href="mailto:info@shaveberry.com" aria-label="Email">&#x2709;&#xFE0F;</a>
       </div>
     </div>
