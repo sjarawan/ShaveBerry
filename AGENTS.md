@@ -2,7 +2,8 @@
 
 ## Current architecture
 
-Shave Berry is a static website with no build step or package dependencies.
+Shave Berry is a static website with no build step or runtime package dependencies.
+Node.js and development-only npm dependencies support TypeScript Playwright tests.
 `index.html` contains the marketing page and its inline CSS and JavaScript.
 `game.html` (Berry Bounce) is a standalone Canvas game with Web Audio and
 browser-local high scores. Images and the favicon
@@ -41,9 +42,18 @@ Run `powershell -NoProfile -ExecutionPolicy Bypass -File scripts/validate-site.p
 root before presenting changes. PowerShell 7 users can substitute `pwsh`.
 See `README.md` for coverage and limitations.
 
+Use Node.js 24 LTS (minimum 22). Run `npm ci`, then
+`npx playwright install chromium` once, followed by `npm run test:types` and
+`npm test`. On Linux, use `npx playwright install --with-deps chromium`.
+On Windows with a restricted PowerShell execution policy, use `npm.cmd` and
+`npx.cmd`. Tests start their own loopback HTTP server; never point them at
+production. Keep desktop and mobile Chromium coverage and meaningful assertions.
+Do not weaken assertions to hide failures. Reports and failure screenshots/traces
+are generated under ignored `playwright-report/` and `test-results/` directories.
+
 Add meaningful tests for new logic and regressions as the project grows. Future
 TypeScript logic should have focused unit tests; browser interactions should
-have targeted browser tests. Until then, manually check changed interactions on
+have targeted browser tests. Also manually check changed interactions on
 desktop and mobile, including keyboard controls and relevant game behavior.
 Report actual commands and outcomes, distinguishing automated checks, manual
 checks, and checks that could not run. Never claim this static validator proves
