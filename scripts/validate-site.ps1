@@ -8,7 +8,7 @@ $failures = [System.Collections.Generic.List[string]]::new()
 $files = [System.Collections.Generic.Dictionary[string, string]]::new([System.StringComparer]::Ordinal)
 $anchors = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
 $sources = @(Get-ChildItem -LiteralPath $Root -Recurse -File | Where-Object {
-    $_.FullName -notmatch '[\\/](\.git|node_modules)[\\/]'
+    $_.FullName -notmatch '[\\/](\.git|node_modules|playwright-report|test-results|blob-report)[\\/]'
 })
 
 foreach ($file in $sources) {
